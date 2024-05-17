@@ -63,7 +63,7 @@
 <body>
     <div class="container">
         <div class="text-container">
-            <p>Thank you so much for your participation. We will reach you out if your are eligibale to the main user experiment. Click submit button <b>one time</b> and you are done with the user study.
+            <p>Thank you so much for your participation. We will reach out if you are eligible for the main user experiment. Click the submit button <b>one time</b> and you are done with the user study.
             <br> 
             Prolific Completion code: <b>CRZYT81N</b> </p>
             <form>
@@ -86,10 +86,27 @@
 
         const database = firebase.database();
 
+        function getCookie(name) {
+            let cookieArray = document.cookie.split(';');
+            for (let i = 0; i < cookieArray.length; i++) {
+                let cookiePair = cookieArray[i].split('=');
+                if (name == cookiePair[0].trim()) {
+                    return cookiePair[1];
+                }
+            }
+            return null;
+        }
+
+        let userId = getCookie('userId');
+        if (!userId) {
+            userId = 'user_' + Date.now();
+            document.cookie = "userId=" + userId + "; path=/";
+        }
+
         function saveProlificId() {
             const prolificId = document.getElementById('prolificId').value;
             if (prolificId) {
-                database.ref('prolificIds').push({
+                database.ref('responses/' + userId).push({
                     prolificId: prolificId,
                     timestamp: new Date().toISOString()
                 }).then(() => {
